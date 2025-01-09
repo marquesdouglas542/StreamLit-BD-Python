@@ -8,7 +8,7 @@ import psycopg2
 
 #@st.experimental_singleton
 def init_connection():
-    return psycopg2.connect(**st.secrets["postgresql"])
+    return psycopg2.connect(**st.secrets["postgres"])
 conn = init_connection()
 
 #@st.experimental_memo(ttl=600)

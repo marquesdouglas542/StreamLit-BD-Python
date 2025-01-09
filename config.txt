@@ -1,6 +1,7 @@
 # Configurações de conexão PostgreSQL
-db_host=192.168.0.250
-db_name=DB-COMERCIAL
-db_user=postgres
-db_password=postgres
-db_port=5432
+[postgres]
+db_host="192.168.0.250"
+db_name="DB-COMERCIAL"
+db_user="postgres"
+db_password="postgres"
+db_port="5432"
