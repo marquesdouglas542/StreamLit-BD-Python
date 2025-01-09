@@ -6,6 +6,7 @@ import time
 import psycopg2
 #import matplotlib as plb
 
+
 #ConeXão com o POSTGRE
 connection = psycopg2.connect(host='192.168.0.250',
                                   database='DB-CONTAS A RECEBER',
@@ -23,15 +24,24 @@ dadosFilial = pd.DataFrame(exibe)
 dadosFilial.columns=['id', 'Nome', 'FkUnidadeDeNegocio']
 
 #Funciona como um container para o menu lateral
+
 with st.sidebar:
-    st.header("A")
-    #Estrutura
+
+    st.header("Menu de análises")
+
+    #Menu dropdown para escolher análise
     escolherAnalise = st.selectbox(
-        "Monte sua análise",
+        "Selecione o período",
         ("Anual", "Semestral"),
         index = None,
-        placeholder = "Selecione um período"
+        placeholder = "..."
     )
+    escolherVisualizacao = st.multiselect(
+        "Monte sua consulta",
+        ("a", "b", "c"),
+        placeholder= "..."
+    )
+
 
 if escolherAnalise == "Anual":
 
@@ -56,7 +66,7 @@ elif escolherAnalise == "Semestral":
         else:
             st.write("Falha ao carregar gráfico")
 elif escolherAnalise == None:
-    st.header("Olá! ☺️ aqui você verá sua análise. Acesse o menu lateral e escolha seus parâmetros")
+    st.subheader("Olá! ☺️ aqui você verá sua análise. Acesse o menu lateral e escolha seus parâmetros")
 else:
     st.write('Erro')
 
