@@ -1,5 +1,5 @@
 # Configurações de conexão PostgreSQL
-[postgres]
+[postgresql]
 db_host="192.168.0.250"
 db_name="DB-COMERCIAL"
 db_user="postgres"
