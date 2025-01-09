@@ -1,90 +1,63 @@
+from operator import index
+
 import pandas as pd
 import streamlit as st
 import time
-
 import psycopg2
-#import pandas as pd
 #import matplotlib as plb
 
-#@st.experimental_singleton
-def init_connection():
-    return psycopg2.connect(**st.secrets["postgresql"])
-conn = init_connection()
+#ConeXão com o POSTGRE
+connection = psycopg2.connect(host='192.168.0.250',
+                                  database='DB-CONTAS A RECEBER',
+                                  user='postgres',
+                                  password='postgres')
+cursor = connection.cursor()
 
-#@st.experimental_memo(ttl=600)
-def run_query(query):
-    with conn.cursor() as cur:
-        cur.execute(query)
-        return cur.fetchall()
+exibir_Filiais = cursor.execute("""
+   SELECT "Id", "Nome", "FkUnidadeDeNegocio"
+   FROM public.filial;
+ """)
 
-rows = run_query("SELECT * FROM cadastro-pn limit 10")
+exibe = cursor.fetchall()
+dadosFilial = pd.DataFrame(exibe)
+dadosFilial.columns=['id', 'Nome', 'FkUnidadeDeNegocio']
 
-data = pd.DataFrame(rows)
-data.columns=['PkcodigoPn','nome', 'estado', 'cidade',]
-st.table(data)
+#Funciona como um container para o menu lateral
+with st.sidebar:
+    st.header("A")
+    #Estrutura
+    escolherAnalise = st.selectbox(
+        "Monte sua análise",
+        ("Anual", "Semestral"),
+        index = None,
+        placeholder = "Selecione um período"
+    )
 
-
-
-st.title("Análise RPA")
-
-st.set_page_config(page_title="Dashboard", page_icon="🌍", layout="wide")
-st.subheader("🔔 Análise Descritiva com Python e Streamlit")
-st.markdown("##")
-
-theme_plotly = None
-
-
-
-
-escolherAnalise = st.selectbox(
-    "Monte sua análise",
-    ("Anual", "Semestral", "Trimestral", "Semanal"),
-    index = None,
-    placeholder = "Selecione um período"
-)
 if escolherAnalise == "Anual":
-    st.write("Gráfico anual")
+
     with st.spinner("carregando..."):
-        time.sleep(5)
+        time.sleep(3)
 
         if st.success:
-            st.write("Gráfico do Ano")
-            # Aqui Vou colocar o gráfico
-
+            st.write("Gráfico anual")
+            st.table(dadosFilial) #Exibe a Tabela apos 3 segundos de carregamento
         else:
             st.write("Falha ao carregar gráfico")
 
 elif escolherAnalise == "Semestral":
 
     with st.spinner("carregando..."):
-        time.sleep(5)
+        time.sleep(3)
         st.success("pronto!")
 
         if st.success:
-            st.write("Gráfico dos últimos 6 meses")
+           st.write("Gráfico dos últimos 6 meses")
             #Aqui Vou colocar o gráfico
         else:
             st.write("Falha ao carregar gráfico")
-
-elif escolherAnalise == "Trimestral":
-    st.write("Gráfico do Trimestre")
-
-    if st.success:
-            st.write("Gráfico Trimestral")
-        # Aqui Vou colocar o gráfico
-    else:
-        st.write("Falha ao carregar gráfico")
-
-elif escolherAnalise == "Semanal":
-    st.write("Gráfico da Semana")
-
-    if st.success:
-        st.write("Gráfico Semanal")
-        # Aqui Vou colocar o gráfico
-    else:
-        st.write("Falha ao carregar gráfico")
-
+elif escolherAnalise == None:
+    st.header("Olá! ☺️ aqui você verá sua análise. Acesse o menu lateral e escolha seus parâmetros")
 else:
-    st.write("Não encontrado")
+    st.write('Erro')
 
 
